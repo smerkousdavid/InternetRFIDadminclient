@@ -1,5 +1,7 @@
 from Tkinter import Tk, Button, Label, Text, Entry, Radiobutton, mainloop
 
+from PIL import Image, ImageTk
+
 
 class Gui:
 
@@ -19,6 +21,47 @@ class Gui:
             Button(self.root, text=text, command=callname).grid(row=row, column=column)
         else:
             types(self.root, text=text).grid(row=row, column=column)
+
+    def image(self, row, column, image, thumnail=False, thumbwidth=32, thumbheight=32):
+            try:
+                fin = Image.open(image)
+            except Exception:
+                try:
+                    fin = Image.open(image)
+                except Exception:
+                    Gui.settitle("Image Error")
+            if thumnail:
+                fin.thumbnail((thumbwidth, thumbheight), Image.ANTIALIAS)
+            photo = ImageTk.PhotoImage(fin)
+            im = Label(self.root, image=photo)
+            im.image = photo
+            im.grid(row=row, column=column)
+
+    def rawimage(self, row, column, rawimage, thumnail=False, thumbwidth=32, thumbheight=32):
+        try:
+            fin = Image.eval(rawimage)
+        except Exception:
+            Gui.settitle("Image Error")
+        if thumnail:
+            fin.thumbnail((thumbwidth, thumbheight), Image.ANTIALIAS)
+        photo = ImageTk.PhotoImage(fin)
+        im = Label(self.root, image=photo)
+        im.image = photo
+        im.grid(row=row, column=column)
+
+    @staticmethod
+    def returnrawimage(rawimage, thumnail=False, thumbwidth=32, thumbheight=32):
+        fin = Image.eval(rawimage)
+        if thumnail:
+            fin.thumbnail((thumbwidth, thumbheight), Image.ANTIALIAS)
+        return str(ImageTk.PhotoImage(fin))
+
+    @staticmethod
+    def returnimage(image, thumbnail=False, thumbwidth=32, thumbheight=32):
+        fin = Image.open(image)
+        if thumbnail:
+            fin.thumbnail((thumbwidth, thumbheight), Image.ANTIALIAS)
+        return ImageTk.PhotoImage(fin)
 
     def setgridsize(self, height=5, width=6):
         self.height = height
@@ -58,13 +101,13 @@ class Gui:
     def getrows(self):
         return self.height
 
-    def setrow(self, array, rownum, type=Label, start=1):
+    def setrow(self, array, rownum, types=Label, start=1):
         for at in range(len(array)):
-            type(self.root, text=array[at]).grid(row=rownum, column=at+start)
+            types(self.root, text=array[at]).grid(row=rownum, column=at+start)
 
-    def setcolumn(self, array, columnnum, type=Label, start=1):
+    def setcolumn(self, array, columnnum, types=Label, start=1):
         for at in range(len(array)):
-            type(self.root, text=array[at]).grid(row=at+start, column=columnnum)
+            types(self.root, text=array[at]).grid(row=at+start, column=columnnum)
 
     def clearrow(self, rownum):
         for clear in range(1, self.width+1):
