@@ -1,7 +1,22 @@
 from LTS import *
 from gui import Gui
 from time import sleep
+import threading
 
+def start():
+    while True:
+        print "start"
+        count = 1
+        learnerarray = []
+        for i in range(0,5):
+            learnerarray.append(LTSBackend(count).getData())
+            count = count + 1
+
+        count = 1
+        for i in learnerarray:
+            Gui.setrow(win,i,count)
+            count = count + 1
+        sleep(10)
 
 win = Gui()
 Gui.setdefault(win)
@@ -21,21 +36,7 @@ def year():
 def date():
     print "date press"
 
-def start():
-    while True:
-        print "start"
-        count = 1
-        learnerarray = []
-        for i in range(0,5):
-            learnerarray.append(LTSBackend(count).getData())
-            count = count + 1
 
-        count = 1
-        for i in learnerarray:
-            Gui.setrow(win,i,count)
-            count = count + 1
-        Gui.cleargrid(win)
-        sleep(10)
 count = 1
 learnerarray = []
 for i in range(0,5):
@@ -47,5 +48,6 @@ for i in learnerarray:
     Gui.setrow(win,i,count)
     count +=1
 
-start()
+t = threading.Thread(target=start)
+t.start()
 Gui.start()
